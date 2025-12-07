@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расчет уровня защищенности ИСПДн</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="hero">
+        <div class="hero__content">
+            <p class="eyebrow">Мастер-опрос</p>
+            <h1>Расчет уровня защищенности ИСПДн</h1>
+            <p class="lead">Ответьте на несколько вопросов, чтобы получить уровень защищенности и перечень мер по приказу ФСТЭК №2.</p>
+        </div>
+    </header>
+
+    <main class="layout" id="pageLayout">
+        <section class="panel bento" id="wizardPanel">
+            <div class="panel__header">
+                <div>
+                    <p class="eyebrow">Шаги мастера</p>
+                    <h2>Ответьте на вопросы</h2>
+                </div>
+                <div class="progress" role="progressbar" aria-label="Прогресс заполнения">
+                    <div class="progress__bar" id="progressBar"></div>
+                </div>
+            </div>
+            <div class="wizard" id="wizard">
+                <div class="wizard__step active" data-step="1">
+                    <div class="step__header">
+                        <div class="step__badge">1</div>
+                        <div>
+                            <p class="eyebrow">Тип данных</p>
+                            <h3>Какой тип данных обрабатывается в вашей ИСПДн?</h3>
+                            <p class="muted">Выберите один вариант</p>
+                        </div>
+                    </div>
+                    <div class="options options--grid" role="radiogroup" aria-label="Тип данных">
+                        <label class="card card--option">
+                            <input type="radio" name="dataType" value="special">
+                            <div>
+                                <p class="card__title">Специальные данные</p>
+                                <p class="card__desc">Данные о состоянии здоровья, убеждениях и т.п.</p>
+                            </div>
+                        </label>
+                        <label class="card card--option">
+                            <input type="radio" name="dataType" value="biometric">
+                            <div>
+                                <p class="card__title">Биометрические данные</p>
+                                <p class="card__desc">Отпечатки, изображение лица, голос.</p>
+                            </div>
+                        </label>
+                        <label class="card card--option">
+                            <input type="radio" name="dataType" value="public">
+                            <div>
+                                <p class="card__title">Общедоступные данные</p>
+                                <p class="card__desc">Публичные сведения, публикуемые субъектами.</p>
+                            </div>
+                        </label>
+                        <label class="card card--option">
+                            <input type="radio" name="dataType" value="other">
+                            <div>
+                                <p class="card__title">Иные данные</p>
+                                <p class="card__desc">Все остальные категории персональных данных.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wizard__step" data-step="2">
+                    <div class="step__header">
+                        <div class="step__badge">2</div>
+                        <div>
+                            <p class="eyebrow">Угрозы</p>
+                            <h3>Какой тип угроз актуален для вашей системы?</h3>
+                            <p class="muted">Можно выбрать несколько вариантов</p>
+                        </div>
+                    </div>
+                    <div class="options" role="group" aria-label="Типы угроз">
+                        <label class="chip">
+                            <input type="checkbox" value="1">Угрозы 1 типа
+                        </label>
+                        <label class="chip">
+                            <input type="checkbox" value="2">Угрозы 2 типа
+                        </label>
+                        <label class="chip">
+                            <input type="checkbox" value="3">Угрозы 3 типа
+                        </label>
+                        <label class="chip">
+                            <input type="checkbox" value="unknown">Тип угроз неизвестен
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wizard__step" data-step="3">
+                    <div class="step__header">
+                        <div class="step__badge">3</div>
+                        <div>
+                            <p class="eyebrow">Субъекты</p>
+                            <h3>Обрабатываете ли вы данные только сотрудников?</h3>
+                            <p class="muted">Один вариант ответа</p>
+                        </div>
+                    </div>
+                    <div class="options" role="radiogroup" aria-label="Только сотрудники?">
+                        <label class="card card--option">
+                            <input type="radio" name="employeesOnly" value="yes">
+                            <div>
+                                <p class="card__title">Да</p>
+                                <p class="card__desc">В ИСПДн только данные сотрудников.</p>
+                            </div>
+                        </label>
+                        <label class="card card--option">
+                            <input type="radio" name="employeesOnly" value="no">
+                            <div>
+                                <p class="card__title">Нет</p>
+                                <p class="card__desc">Есть данные сторонних субъектов.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wizard__footer">
+                    <p class="muted" id="formMessage"></p>
+                    <button class="btn btn--ghost" id="prevBtn" type="button">Назад</button>
+                    <button class="btn" id="nextBtn" type="button">Далее</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel--result" id="resultPanel">
+            <div class="panel__header">
+                <div>
+                    <p class="eyebrow">Результат</p>
+                    <h2>Уровень и меры</h2>
+                </div>
+                <div class="badge" id="levelBadge">—</div>
+            </div>
+            <div class="result" id="resultBox">
+                <p class="muted">После прохождения опроса здесь появится отчет.</p>
+            </div>
+            <div class="result-actions" id="resultActions" hidden>
+                <button class="btn" id="restartBtn" type="button">Рассчитать заново</button>
+                <button class="btn btn--ghost" id="saveBtn" type="button">Сохранить отчёт</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</body>
+</html>
