@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const steps = Array.from(document.querySelectorAll('.wizard__step'));
     const pageLayout = document.getElementById('pageLayout');
+    const nonEmployeeStep = document.getElementById('nonEmployeeStep');
     const progressBar = document.getElementById('progressBar');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
@@ -29,23 +30,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return choice.value === 'yes';
     };
 
+    const shouldShowNonEmployee = () => {
+        const employeesOnly = getEmployeesOnly();
+        return employeesOnly === false;
+    };
+
+    const getVisibleSteps = () => steps.filter((step) => step.id !== 'nonEmployeeStep' || shouldShowNonEmployee());
+
     const updateProgress = () => {
-        const percent = ((activeIndex + 1) / steps.length) * 100;
+        const visible = getVisibleSteps();
+        const percent = ((activeIndex + 1) / visible.length) * 100;
         progressBar.style.width = `${percent}%`;
     };
 
     const updateButtons = () => {
         prevBtn.disabled = activeIndex === 0;
-        const isLast = activeIndex === steps.length - 1;
+        const isLast = activeIndex === getVisibleSteps().length - 1;
         nextBtn.textContent = isLast ? 'Рассчитать' : 'Далее';
     };
 
     const setStep = (index, skipMessageReset = false) => {
-        const clamped = Math.max(0, Math.min(index, steps.length - 1));
+        const visible = getVisibleSteps();
+        const clamped = Math.max(0, Math.min(index, visible.length - 1));
         activeIndex = clamped;
 
         steps.forEach((step) => step.classList.remove('active'));
-        steps[clamped].classList.add('active');
+        visible[clamped].classList.add('active');
         updateProgress();
         updateButtons();
         if (!skipMessageReset) {
@@ -53,8 +63,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const syncVisibility = () => {
+        const visible = getVisibleSteps();
+        if (activeIndex >= visible.length) {
+            activeIndex = visible.length - 1;
+        }
+        steps.forEach((step) => {
+            if (step.id === 'nonEmployeeStep' && !shouldShowNonEmployee()) {
+                step.classList.remove('active');
+            }
+        });
+        setStep(activeIndex, true);
+    };
+
     const validateCurrent = () => {
-        const step = steps[activeIndex];
+        const step = getVisibleSteps()[activeIndex];
         setMessage('');
 
         if (step.dataset.step === '1') {
@@ -81,6 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        if (step.dataset.step === '4' && shouldShowNonEmployee()) {
+            const scope = document.querySelector('input[name="nonEmployeeScope"]:checked');
+            if (!scope) {
+                setMessage('Выберите диапазон количества внешних субъектов.');
+                return false;
+            }
+        }
+
         return true;
     };
 
@@ -90,11 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
             (checkbox) => checkbox.value,
         );
         const employeesOnlyChoice = getEmployeesOnly();
+        const nonEmployeeScope = shouldShowNonEmployee()
+            ? document.querySelector('input[name="nonEmployeeScope"]:checked')?.value
+            : null;
 
         return {
             dataType,
             threats,
             employeesOnly: employeesOnlyChoice === true,
+            nonEmployeeScope,
         };
     };
 
@@ -199,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBtn.textContent = defaultSaveText;
         activeIndex = 0;
         setMessage('');
-        setStep(0, true);
+        syncVisibility();
     };
 
     const sanitizeFileName = (name) => {
@@ -259,6 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    document.querySelectorAll('input[name="employeesOnly"]').forEach((input) => {
+        input.addEventListener('change', syncVisibility);
+    });
+
     prevBtn.addEventListener('click', () => {
         const targetIndex = activeIndex - 1;
         setStep(targetIndex);
@@ -266,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nextBtn.addEventListener('click', () => {
         if (!validateCurrent()) return;
-        const isLast = activeIndex === steps.length - 1;
+        const isLast = activeIndex === getVisibleSteps().length - 1;
         if (isLast) {
             submit();
         } else {
@@ -277,5 +316,5 @@ document.addEventListener('DOMContentLoaded', () => {
     restartBtn.addEventListener('click', resetFlow);
     saveBtn.addEventListener('click', saveReport);
 
-    setStep(0, true);
+    syncVisibility();
 });

@@ -14,7 +14,7 @@
         <div class="hero__content">
             <p class="eyebrow">Мастер-опрос</p>
             <h1>Расчет уровня защищенности ИСПДн</h1>
-            <p class="lead">Ответьте на несколько вопросов, чтобы получить уровень защищенности и перечень мер по приказу ФСТЭК №2.</p>
+            <p class="lead">Ответьте на несколько вопросов, чтобы получить уровень защищенности и перечень мер</p>
         </div>
     </header>
 
@@ -40,32 +40,28 @@
                         </div>
                     </div>
                     <div class="options options--grid" role="radiogroup" aria-label="Тип данных">
-                        <label class="card card--option">
+                        <label class="card card--option has-tooltip" data-tooltip="Персональные данные, касающиеся расовой, национальной принадлежности, политических взглядов, религиозных или философских убеждений, состояния здоровья, интимной жизни субъектов персональных данных.">
                             <input type="radio" name="dataType" value="special">
                             <div>
                                 <p class="card__title">Специальные данные</p>
-                                <p class="card__desc">Данные о состоянии здоровья, убеждениях и т.п.</p>
                             </div>
                         </label>
-                        <label class="card card--option">
+                        <label class="card card--option has-tooltip" data-tooltip="Сведения, которые характеризуют физиологические и биологические особенности человека, на основании которых можно установить его личность и которые используются оператором для установления личности субъекта персональных данных.">
                             <input type="radio" name="dataType" value="biometric">
                             <div>
                                 <p class="card__title">Биометрические данные</p>
-                                <p class="card__desc">Отпечатки, изображение лица, голос.</p>
                             </div>
                         </label>
-                        <label class="card card--option">
+                        <label class="card card--option has-tooltip" data-tooltip="Персональные данные субъектов персональных данных, полученные только из общедоступных источников персональных данных, созданных в соответствии со статьей 8 Федерального закона &quot;О персональных данных&quot;.">
                             <input type="radio" name="dataType" value="public">
                             <div>
                                 <p class="card__title">Общедоступные данные</p>
-                                <p class="card__desc">Публичные сведения, публикуемые субъектами.</p>
                             </div>
                         </label>
-                        <label class="card card--option">
+                        <label class="card card--option has-tooltip" data-tooltip="Все остальные данные, что не относятся к прошлым 3 группам.">
                             <input type="radio" name="dataType" value="other">
                             <div>
                                 <p class="card__title">Иные данные</p>
-                                <p class="card__desc">Все остальные категории персональных данных.</p>
                             </div>
                         </label>
                     </div>
@@ -81,13 +77,13 @@
                         </div>
                     </div>
                     <div class="options" role="group" aria-label="Типы угроз">
-                        <label class="chip">
+                        <label class="chip has-tooltip" data-tooltip="Есть актуальные угрозы для ИСПДн, связанные с наличием недокументированных (недекларированных) возможностей в системном программном обеспечении, используемом в информационной системе.">
                             <input type="checkbox" value="1">Угрозы 1 типа
                         </label>
-                        <label class="chip">
+                        <label class="chip has-tooltip" data-tooltip="Есть актуальные угрозы для ИСПДн, связанные с наличием недокументированных (недекларированных) возможностей в прикладном программном обеспечении, используемом в информационной системе.">
                             <input type="checkbox" value="2">Угрозы 2 типа
                         </label>
-                        <label class="chip">
+                        <label class="chip has-tooltip" data-tooltip="Есть актуальные угрозы для ИСПДн, не связанные с наличием недокументированных (недекларированных) возможностей в системном и прикладном программном обеспечении, используемом в информационной системе.">
                             <input type="checkbox" value="3">Угрозы 3 типа
                         </label>
                         <label class="chip">
@@ -118,6 +114,33 @@
                             <div>
                                 <p class="card__title">Нет</p>
                                 <p class="card__desc">Есть данные сторонних субъектов.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="wizard__step" data-step="4" id="nonEmployeeStep">
+                    <div class="step__header">
+                        <div class="step__badge">4</div>
+                        <div>
+                            <p class="eyebrow">Объем данных</p>
+                            <h3>Сколько субъектов (не сотрудников) в ИСПДн?</h3>
+                            <p class="muted">Показывается только если в предыдущем вопросе ответ «Нет»</p>
+                        </div>
+                    </div>
+                    <div class="options" role="radiogroup" aria-label="Количество субъектов">
+                        <label class="card card--option">
+                            <input type="radio" name="nonEmployeeScope" value="under_100k">
+                            <div>
+                                <p class="card__title">До 100 000</p>
+                                <p class="card__desc">Небольшой объем сторонних субъектов.</p>
+                            </div>
+                        </label>
+                        <label class="card card--option">
+                            <input type="radio" name="nonEmployeeScope" value="over_100k">
+                            <div>
+                                <p class="card__title">Более 100 000</p>
+                                <p class="card__desc">Крупный объем сторонних субъектов.</p>
                             </div>
                         </label>
                     </div>
