@@ -73,21 +73,21 @@
                         <div>
                             <p class="eyebrow">Угрозы</p>
                             <h3>Какой тип угроз актуален для вашей системы?</h3>
-                            <p class="muted">Можно выбрать несколько вариантов</p>
+                            <p class="muted">Выберите один вариант</p>
                         </div>
                     </div>
-                    <div class="options" role="group" aria-label="Типы угроз">
+                    <div class="options" role="radiogroup" aria-label="Типы угроз">
                         <label class="chip has-tooltip" data-tooltip="Есть актуальные угрозы для ИСПДн, связанные с наличием недокументированных (недекларированных) возможностей в системном программном обеспечении, используемом в информационной системе.">
-                            <input type="checkbox" value="1">Угрозы 1 типа
+                            <input type="radio" name="threatType" value="1">Угрозы 1 типа
                         </label>
                         <label class="chip has-tooltip" data-tooltip="Есть актуальные угрозы для ИСПДн, связанные с наличием недокументированных (недекларированных) возможностей в прикладном программном обеспечении, используемом в информационной системе.">
-                            <input type="checkbox" value="2">Угрозы 2 типа
+                            <input type="radio" name="threatType" value="2">Угрозы 2 типа
                         </label>
                         <label class="chip has-tooltip" data-tooltip="Есть актуальные угрозы для ИСПДн, не связанные с наличием недокументированных (недекларированных) возможностей в системном и прикладном программном обеспечении, используемом в информационной системе.">
-                            <input type="checkbox" value="3">Угрозы 3 типа
+                            <input type="radio" name="threatType" value="3">Угрозы 3 типа
                         </label>
                         <label class="chip">
-                            <input type="checkbox" value="unknown">Тип угроз неизвестен
+                            <input type="radio" name="threatType" value="unknown">Тип угроз неизвестен
                         </label>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                         <div>
                             <p class="eyebrow">Объем данных</p>
                             <h3>Сколько субъектов (не сотрудников) в ИСПДн?</h3>
-                            <p class="muted">Показывается только если в предыдущем вопросе ответ «Нет»</p>
+                            <p class="muted">Выберите диапазон независимо от ответа выше</p>
                         </div>
                     </div>
                     <div class="options" role="radiogroup" aria-label="Количество субъектов">
@@ -148,13 +148,13 @@
 
                 <div class="wizard__footer">
                     <p class="muted" id="formMessage"></p>
-                    <button class="btn btn--ghost" id="prevBtn" type="button">Назад</button>
                     <button class="btn" id="nextBtn" type="button">Далее</button>
+                    <button class="btn btn--ghost" id="prevBtn" type="button">Назад</button>
                 </div>
             </div>
         </section>
 
-        <section class="panel panel--result" id="resultPanel">
+        <section class="panel panel--result" id="resultPanel" hidden>
             <div class="panel__header">
                 <div>
                     <p class="eyebrow">Результат</p>
@@ -169,8 +169,79 @@
                 <button class="btn" id="restartBtn" type="button">Рассчитать заново</button>
                 <button class="btn btn--ghost" id="saveBtn" type="button">Сохранить отчёт</button>
             </div>
+            <div class="templates-block" id="templatesBlock">
+                <div class="templates-block__header">
+                    <div>
+                        <p class="eyebrow">Документы</p>
+                        <h4>Перечень необходимых документов</h4>
+                    </div>
+                </div>
+                <div class="template-card">
+                    <div>
+                        <p class="template-card__title">АКТ определения уровня защищенности персональных данных информационной системы персональных данных</p>
+                        <p class="template-card__desc">Скачать и заполнить официальный акт по результатам расчёта</p>
+                    </div>
+                    <button class="btn btn--ghost" id="downloadActBtn" type="button">Скачать шаблон</button>
+                </div>
+            </div>
         </section>
     </main>
+
+    <div class="modal" id="actModal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="actModalTitle">
+            <div class="modal__header">
+                <div>
+                    <p class="eyebrow">Данные для акта</p>
+                    <h3 id="actModalTitle">Заполните сведения</h3>
+                </div>
+                <button class="modal__close" id="actModalClose" type="button" aria-label="Закрыть">×</button>
+            </div>
+            <form class="modal__body" id="actForm">
+                <label class="field">
+                    <span class="field__label">Наименование организации</span>
+                    <input class="field__input" type="text" id="orgInput" name="organization" required>
+                </label>
+                <label class="field">
+                    <span class="field__label">Должность руководителя организации</span>
+                    <input class="field__input" type="text" id="headInput" name="headPosition" required>
+                </label>
+                <label class="field">
+                    <span class="field__label">Наименование ИСПДн</span>
+                    <input class="field__input" type="text" id="systemInput" name="systemName" required>
+                </label>
+                <div class="modal__actions">
+                    <button class="btn btn--ghost" type="button" id="actModalCancel">Отмена</button>
+                    <button class="btn" type="submit" id="actModalSubmit">Скачать акт</button>
+                </div>
+            <p class="muted" id="actModalMessage"></p>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="reportModal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle">
+            <div class="modal__header">
+                <div>
+                    <p class="eyebrow">Сохранить отчёт</p>
+                    <h3 id="reportModalTitle">Название отчёта</h3>
+                </div>
+                <button class="modal__close" id="reportModalClose" type="button" aria-label="Закрыть">×</button>
+            </div>
+            <form class="modal__body" id="reportForm">
+                <label class="field">
+                    <span class="field__label">Наименование отчёта</span>
+                    <input class="field__input" type="text" id="reportNameInput" name="reportName" required value="Отчет ИСПДн">
+                </label>
+                <div class="modal__actions">
+                    <button class="btn btn--ghost" type="button" id="reportModalCancel">Отмена</button>
+                    <button class="btn" type="submit" id="reportModalSubmit">Скачать</button>
+                </div>
+                <p class="muted" id="reportModalMessage"></p>
+            </form>
+        </div>
+    </div>
 
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </body>
